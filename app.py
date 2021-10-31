@@ -60,7 +60,7 @@ def handle_message(event):
     search_info = "ポケモンゲットじゃぞ！！"
     line_bot_api.reply_message(
         event.reply_token,
-        TextSendMessage(text=search_info))
+        TextSendMessage(text='「' + event.message.text + '」って何？'))
 
 if __name__ == "__main__":
 #    app.run()
