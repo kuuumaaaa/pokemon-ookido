@@ -28,6 +28,18 @@ handler = WebhookHandler(YOUR_CHANNEL_SECRET)
 pokemon = open('./pokedex.json','r')
 pokemon_list = json.load(pokemon)
 
+def get_status(list):
+    no = '図鑑No.:' + str(list['id']) + '\n'
+    name = '名前:' + str(list['name']['japanese']) + '\n'
+    type = 'タイプ:' + str(list['type']) + '\n'
+    HP = 'H:' + str(list['base']['HP']) + '\n'
+    ATK = 'A:' + str(list['base']['Attack']) + '\n'
+    DEF = 'B:' + str(list['base']['Defense']) + '\n'
+    STK = 'C:' + str(list['base']['Sp. Attack']) + '\n'
+    SEF = 'D:' + str(list['base']['Sp. Defense']) + '\n'
+    SPD = 'S:' + str(list['base']['Speed']) + '\n'
+    return no+name+type+HP+ATK+DEF+STK+SEF+SPD
+
 
 @app.route("/")
 def hello_world():
@@ -55,11 +67,11 @@ def handle_message(event):
     search_info = "そんなポケモンはおらん！！！！"
     for i in range(len(pokemon_list)):
         if(pokemon_list[i]['name']['japanese']==event.message.text):
-            search_info = "そのポケモンは英語で" + pokemon_list[i]['name']['english'] + "というぞ！\n" + "ポケモンゲットじゃぞ！！"
+            search_info = get_status(pokemon_list[i])
             exit
     line_bot_api.reply_message(
         event.reply_token,
-        TextSendMessage(text=search_info))
+        TextSendMessage(text=search_info+"じゃぞ！！\nポケモンゲットじゃぞ！！！"))
 
 if __name__ == "__main__":
 #    app.run()
