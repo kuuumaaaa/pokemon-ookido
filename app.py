@@ -12,6 +12,10 @@ from linebot.models import (
     MessageEvent, TextMessage, TextSendMessage,
 )
 
+import json
+import jaconv
+import re
+
 app = Flask(__name__)
 
 #環境変数取得
@@ -20,6 +24,11 @@ YOUR_CHANNEL_SECRET = os.environ["YOUR_CHANNEL_SECRET"]
 
 line_bot_api = LineBotApi(YOUR_CHANNEL_ACCESS_TOKEN)
 handler = WebhookHandler(YOUR_CHANNEL_SECRET)
+
+
+pokemon = open('./pokedex.json','r')
+pokemon_list = json.load(pokemon)
+
 
 @app.route("/")
 def hello_world():
@@ -44,9 +53,13 @@ def callback():
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
+    for i in range(len(pokemon_list)):
+        if(pokemon_list[i]['name']['japanese']==event.message.text):
+            search_info = pokemon_list[i]
+            exit
     line_bot_api.reply_message(
         event.reply_token,
-        TextSendMessage(text=event.message.text))
+        TextSendMessage(text=search_info))
 
 if __name__ == "__main__":
 #    app.run()
