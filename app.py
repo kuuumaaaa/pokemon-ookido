@@ -53,10 +53,11 @@ def callback():
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
-    for i in range(len(pokemon_list)):
-        if(pokemon_list[i]['name']['japanese']==event.message.text):
-            search_info = pokemon_list[i]
-            exit
+    # for i in range(len(pokemon_list)):
+    #     if(pokemon_list[i]['name']['japanese']==event.message.text):
+    #         search_info = pokemon_list[i]
+    #         exit
+    search_info = "ポケモンゲットじゃぞ！！"
     line_bot_api.reply_message(
         event.reply_token,
         TextSendMessage(text=search_info))
