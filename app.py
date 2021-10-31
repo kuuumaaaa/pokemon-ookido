@@ -28,18 +28,47 @@ handler = WebhookHandler(YOUR_CHANNEL_SECRET)
 pokemon = open('./pokedex.json','r')
 pokemon_list = json.load(pokemon)
 
+
+
+u_dict = {'Normal':'ノーマル',
+          'Fire':'ほのお',
+          'Water':'みず' ,
+          'Grass':'くさ' ,
+          'Water':'みず' ,
+          'Electric':'でんき' ,
+          'Ice':'こおり' ,
+          'Fighting':'かくとう' ,
+          'Poison':'どく' ,
+          'Ground':'じめん' ,
+          'Flying':'ひこう' ,
+          'Psychic':'エスパー' ,
+          'Bug':'むし' ,
+          'Rock':'いわ' ,
+          'Ghost':'ゴースト' ,
+          'Dragon':'ドラゴン' ,
+          'Dark':'あく' ,
+          'Steel':'はがね',
+          'Fairy':'フェアリー' 
+         }
+def type_to_jn(types):
+    jn_types = []
+    for type in types:
+        for word, read in u_dict.items():
+            if(word == type):
+                jn_types.append(type.replace(word, read))
+    return jn_types
 def get_status(list):
     no = '図鑑No.:' + str(list['id']) + '\n'
     name = '名前:' + str(list['name']['japanese']) + '\n'
-    type = 'タイプ:' + str(list['type']) + '\n'
+    type = 'タイプ:' + str(type_to_jn(list['type'])) + '\n'
     HP = 'H:' + str(list['base']['HP']) + '\n'
     ATK = 'A:' + str(list['base']['Attack']) + '\n'
     DEF = 'B:' + str(list['base']['Defense']) + '\n'
     STK = 'C:' + str(list['base']['Sp. Attack']) + '\n'
     SEF = 'D:' + str(list['base']['Sp. Defense']) + '\n'
     SPD = 'S:' + str(list['base']['Speed']) + '\n'
-    return no+name+type+HP+ATK+DEF+STK+SEF+SPD
-
+    TOTAL = 'TOTAL:' + str(list['base']['HP']+list['base']['Attack']+list['base']['Defense']+list['base']['Sp. Attack']+list['base']['Sp. Defense']+list['base']['Speed'])
+    return no+name+type+HP+ATK+DEF+STK+SEF+SPD+TOTAL
 
 @app.route("/")
 def hello_world():
