@@ -99,8 +99,8 @@ def handle_message(event):
             search_info = get_status(pokemon_list[i])
             exit
     image_message = ImageSendMessage(
-        original_content_url="https://png/195.png", #JPEG 最大画像サイズ：240×240 最大ファイルサイズ：1MB(注意:仕様が変わっていた)
-        preview_image_url="https://png/195.png" #JPEG 最大画像サイズ：1024×1024 最大ファイルサイズ：1MB(注意:仕様が変わっていた)
+        original_content_url="https://pokemon-ookido.herokuapp.com/png/195.png", #JPEG 最大画像サイズ：240×240 最大ファイルサイズ：1MB(注意:仕様が変わっていた)
+        preview_image_url="https://pokemon-ookido.herokuapp.com/png/195.png" #JPEG 最大画像サイズ：1024×1024 最大ファイルサイズ：1MB(注意:仕様が変わっていた)
     )
     line_bot_api.reply_message(
         event.reply_token,
