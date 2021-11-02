@@ -87,7 +87,6 @@ def cal_type_score(input_types):
     values = [1 for i in range(len(keys))]
     types_score = dict(zip(keys, values))
 
-    input_types = "ノーマル　ほのう"
     input_types = input_types.split()
     for type in input_types:
         for i in range(len(double_list['types'])):
@@ -111,7 +110,7 @@ def get_keys_from_value(d, val):
     return [k for k, v in d.items() if v == val]
 
 def export_type_score(types_score):
-    type_score_message =""
+    type_score_message ="タイプ相性"
     four_times_types = get_keys_from_value(types_score, 4)
     if len(four_times_types)!=0 :
         type_score_message += "\n-----4倍-----\n"
