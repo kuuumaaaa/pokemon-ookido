@@ -70,6 +70,9 @@ def get_status(list):
     TOTAL = 'TOTAL:' + str(list['base']['HP']+list['base']['Attack']+list['base']['Defense']+list['base']['Sp. Attack']+list['base']['Sp. Defense']+list['base']['Speed'])
     return no+name+type+HP+ATK+DEF+STK+SEF+SPD+TOTAL
 
+def get_tettei_kouryaku(pokemon_id):
+    return "https://yakkun.com/swsh/zukan/n"+str(pokemon_id)
+
 @app.route("/")
 def hello_world():
     return "hello world!"
@@ -93,10 +96,13 @@ def callback():
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
-    search_info = "そんなポケモンはおらん！！！！"
+    message = "そんなポケモンはおらん！！！！"
     for i in range(len(pokemon_list)):
         if(pokemon_list[i]['name']['japanese']==event.message.text):
             search_info = get_status(pokemon_list[i])
+            search_info += "じゃぞ！！\n"
+            pokemon_url = get_tettei_kouryaku(pokemon_list[i]['id'])
+            message=search_info + pokemon_url + "\nポケモンゲットじゃぞ！！！"
             exit
     image_message = ImageSendMessage(
         original_content_url="https://2.bp.blogspot.com/-Ten5Y3wa1s8/VMItaHv6ikI/AAAAAAAAqtU/HVC0kvCwPYo/s800/character_hakase.png", #JPEG 最大画像サイズ：240×240 最大ファイルサイズ：1MB(注意:仕様が変わっていた)
@@ -104,7 +110,7 @@ def handle_message(event):
         )
     line_bot_api.reply_message(
         event.reply_token,
-        [TextSendMessage(text=search_info+"じゃぞ！！\nポケモンゲットじゃぞ！！！"), image_message]
+        [TextSendMessage(text=search_info), image_message]
         )
 
 if __name__ == "__main__":
