@@ -178,7 +178,7 @@ def handle_message(event):
     #     )
         
     data = {
-        "apikey": "YOUR_API_KEY",
+        "apikey": os.environ["YOUR_TALK_API_KEY"],
         "query": event.message.text ,
     }
  
