@@ -183,7 +183,7 @@ def handle_message(event):
     }
  
     data = urllib.parse.urlencode(data).encode("utf-8")
-    with urllib.request.urlopen("https://api.a3rt.recruit-tech.co.jp/talk/v1/smalltalk", data=data) as res:
+    with urllib.request.urlopen("https://api.a3rt.recruit.co.jp/talk/v1/smalltalk", data=data) as res:
         #response = res.read().decode("utf-8")
         reply_json = json.loads(res.read().decode("unicode_escape"))
  
