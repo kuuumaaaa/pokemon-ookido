@@ -75,9 +75,9 @@ def get_tettei_kouryaku(pokemon_id):
     return "https://yakkun.com/swsh/zukan/n"+str(pokemon_id)
 
 def cal_type_score(input_types):
-    double_list_json = open('./double.json','r')
-    half_list_json = open('./half.json','r')
-    zero_list_json = open('./zero.json','r')
+    double_list_json = open('./lineBot/type/double.json','r')
+    half_list_json = open('./lineBot/type/half.json','r')
+    zero_list_json = open('./lineBot/type/zero.json','r')
 
     double_list = json.load(double_list_json)
     half_list = json.load(half_list_json)
