@@ -133,7 +133,16 @@ def export_type_score(types_score):
         type_score_message += "\n-----0倍-----\n"
         type_score_message += '\n'.join(zero_types)
     return type_score_message
-    
+
+def search_pokemon_data(message):
+    for i in range(len(pokemon_list)):
+        if(pokemon_list[i]['name']['japanese']==message):
+            search_info = get_status(pokemon_list[i])
+            search_info += "じゃぞ！！\n\n"
+            pokemon_url = str(pokemon_list[i]['name']['japanese']) + "のポケモン徹底攻略のページじゃぞ！\n" + get_tettei_kouryaku(pokemon_list[i]['id'])
+            reply_message = search_info + pokemon_url + "\nポケモンゲットじゃぞ！！！"
+            exit
+    return reply_message
 
 
 @app.route("/")
@@ -160,38 +169,48 @@ def callback():
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     # message = "そんなポケモンはおらん！！！！"
-    # for i in range(len(pokemon_list)):
-    #     if(pokemon_list[i]['name']['japanese']==event.message.text):
-    #         search_info = get_status(pokemon_list[i])
-    #         search_info += "じゃぞ！！\n\n"
-    #         pokemon_url = str(pokemon_list[i]['name']['japanese']) + "のポケモン徹底攻略のページじゃぞ！\n" + get_tettei_kouryaku(pokemon_list[i]['id'])
-    #         message = search_info + pokemon_url + "\nポケモンゲットじゃぞ！！！"
-    #         exit
-    # # image_message = ImageSendMessage(
-    # #     original_content_url="https://2.bp.blogspot.com/-Ten5Y3wa1s8/VMItaHv6ikI/AAAAAAAAqtU/HVC0kvCwPYo/s800/character_hakase.png", #JPEG 最大画像サイズ：240×240 最大ファイルサイズ：1MB(注意:仕様が変わっていた)
-    # #     preview_image_url="https://2.bp.blogspot.com/-Ten5Y3wa1s8/VMItaHv6ikI/AAAAAAAAqtU/HVC0kvCwPYo/s800/character_hakase.png" #JPEG 最大画像サイズ：1024×1024 最大ファイルサイズ：1MB(注意:仕様が変わっていた)
-    # #     )
-    # line_bot_api.reply_message(
-    #     event.reply_token,
-    #     # [TextSendMessage(text=message), image_message]
-    #     [TextSendMessage(text=message)]
+    message = search_pokemon_data(event.message.text)
+    if(message.length() >= 1):
+        line_bot_api.reply_message(
+        event.reply_token,
+        [TextSendMessage(text=message)]
+        )
+        # if(pokemon_list[i]['name']['japanese']==event.message.text):
+        #     search_info = get_status(pokemon_list[i])
+        #     search_info += "じゃぞ！！\n\n"
+        #     pokemon_url = str(pokemon_list[i]['name']['japanese']) + "のポケモン徹底攻略のページじゃぞ！\n" + get_tettei_kouryaku(pokemon_list[i]['id'])
+        #     message = search_info + pokemon_url + "\nポケモンゲットじゃぞ！！！"
+        #     exit
+    # image_message = ImageSendMessage(
+    #     original_content_url="https://2.bp.blogspot.com/-Ten5Y3wa1s8/VMItaHv6ikI/AAAAAAAAqtU/HVC0kvCwPYo/s800/character_hakase.png", #JPEG 最大画像サイズ：240×240 最大ファイルサイズ：1MB(注意:仕様が変わっていた)
+    #     preview_image_url="https://2.bp.blogspot.com/-Ten5Y3wa1s8/VMItaHv6ikI/AAAAAAAAqtU/HVC0kvCwPYo/s800/character_hakase.png" #JPEG 最大画像サイズ：1024×1024 最大ファイルサイズ：1MB(注意:仕様が変わっていた)
     #     )
-        
-    data = {
-        "apikey": os.environ["YOUR_TALK_API_KEY"],
-        "query": event.message.text ,
-    }
- 
-    data = urllib.parse.urlencode(data).encode("utf-8")
-    with urllib.request.urlopen("https://api.a3rt.recruit.co.jp/talk/v1/smalltalk", data=data) as res:
-        #response = res.read().decode("utf-8")
-        reply_json = json.loads(res.read().decode("unicode_escape"))
- 
-        if reply_json['status'] == 0:
-            reply = reply_json['results'][0]['reply']
-            line_bot_api.reply_message(
-                event.reply_token,
-                TextSendMessage(text=reply))
+    
+
+
+    elif([event.message.text.split()[i] in u_dict.values() for i in range(len(event.message.text.split()))].count(True) >= 1):
+        types_score = cal_type_score(event.message.text)
+        type_score_message = export_type_score(types_score)
+        line_bot_api.reply_message(
+        event.reply_token,
+        [TextSendMessage(text=type_score_message)]
+        )
+    else:
+        data = {
+            "apikey": os.environ["YOUR_TALK_API_KEY"],
+            "query": event.message.text ,
+        }
+    
+        data = urllib.parse.urlencode(data).encode("utf-8")
+        with urllib.request.urlopen("https://api.a3rt.recruit.co.jp/talk/v1/smalltalk", data=data) as res:
+            #response = res.read().decode("utf-8")
+            reply_json = json.loads(res.read().decode("unicode_escape"))
+    
+            if reply_json['status'] == 0:
+                reply = reply_json['results'][0]['reply']
+                line_bot_api.reply_message(
+                    event.reply_token,
+                    TextSendMessage(text=reply + "じゃぞ！"))
 
 if __name__ == "__main__":
 #    app.run()
