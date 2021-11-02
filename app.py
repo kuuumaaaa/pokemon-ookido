@@ -102,7 +102,7 @@ def handle_message(event):
             search_info = get_status(pokemon_list[i])
             search_info += "じゃぞ！！\n"
             pokemon_url = get_tettei_kouryaku(pokemon_list[i]['id'])
-            message=search_info + pokemon_url + "\nポケモンゲットじゃぞ！！！"
+            message = search_info + pokemon_url + "\nポケモンゲットじゃぞ！！！"
             exit
     image_message = ImageSendMessage(
         original_content_url="https://2.bp.blogspot.com/-Ten5Y3wa1s8/VMItaHv6ikI/AAAAAAAAqtU/HVC0kvCwPYo/s800/character_hakase.png", #JPEG 最大画像サイズ：240×240 最大ファイルサイズ：1MB(注意:仕様が変わっていた)
@@ -110,7 +110,7 @@ def handle_message(event):
         )
     line_bot_api.reply_message(
         event.reply_token,
-        [TextSendMessage(text=search_info), image_message]
+        [TextSendMessage(text=message), image_message]
         )
 
 if __name__ == "__main__":
