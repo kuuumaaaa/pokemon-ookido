@@ -135,13 +135,15 @@ def export_type_score(types_score):
     return type_score_message
 
 def search_pokemon_data(message):
+    reply_message = ""
     for i in range(len(pokemon_list)):
         if(pokemon_list[i]['name']['japanese']==message):
             search_info = get_status(pokemon_list[i])
             search_info += "じゃぞ！！\n\n"
             pokemon_url = str(pokemon_list[i]['name']['japanese']) + "のポケモン徹底攻略のページじゃぞ！\n" + get_tettei_kouryaku(pokemon_list[i]['id'])
             reply_message = search_info + pokemon_url + "\nポケモンゲットじゃぞ！！！"
-            exit
+            break
+    
     return reply_message
 
 
