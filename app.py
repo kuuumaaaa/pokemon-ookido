@@ -101,7 +101,7 @@ def handle_message(event):
         if(pokemon_list[i]['name']['japanese']==event.message.text):
             search_info = get_status(pokemon_list[i])
             search_info += "じゃぞ！！\n"
-            pokemon_url = get_tettei_kouryaku(pokemon_list[i]['id'])
+            pokemon_url = str(pokemon_list[i]['name']['japanese']) + "のポケモン徹底攻略のページじゃぞ！\n" + get_tettei_kouryaku(pokemon_list[i]['id'])
             message = search_info + pokemon_url + "\nポケモンゲットじゃぞ！！！"
             exit
     image_message = ImageSendMessage(
