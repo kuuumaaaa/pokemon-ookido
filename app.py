@@ -170,7 +170,7 @@ def callback():
 def handle_message(event):
     # message = "そんなポケモンはおらん！！！！"
     message = search_pokemon_data(event.message.text)
-    if(message.length() >= 1):
+    if(len(message) >= 1):
         line_bot_api.reply_message(
         event.reply_token,
         [TextSendMessage(text=message)]
