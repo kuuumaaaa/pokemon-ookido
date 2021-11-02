@@ -12,6 +12,7 @@ from linebot.models import (
     MessageEvent, TextMessage, TextSendMessage, ImageMessage, ImageSendMessage
 )
 
+import urllib
 import json
 import re
 
@@ -73,6 +74,68 @@ def get_status(list):
 def get_tettei_kouryaku(pokemon_id):
     return "https://yakkun.com/swsh/zukan/n"+str(pokemon_id)
 
+def cal_type_score(input_types):
+    double_list_json = open('./lineBot/type/double.json','r')
+    half_list_json = open('./lineBot/type/half.json','r')
+    zero_list_json = open('./lineBot/type/zero.json','r')
+
+    double_list = json.load(double_list_json)
+    half_list = json.load(half_list_json)
+    zero_list = json.load(zero_list_json)
+
+    keys = list(u_dict.values())
+    values = [1 for i in range(len(keys))]
+    types_score = dict(zip(keys, values))
+
+    input_types = "ノーマル　ほのう"
+    input_types = input_types.split()
+    for type in input_types:
+        for i in range(len(double_list['types'])):
+            if (type in double_list['types'][i]):
+                for double_types in double_list['types'][i].values():
+                    for double_type in double_types:
+                        types_score[double_type] *= 2
+        for i in range(len(half_list['types'])):
+            if (type in double_list['types'][i]):
+                for half_types in half_list['types'][i].values():
+                    for half_type in half_types:
+                        types_score[half_type] *= 0.5
+        for i in range(len(zero_list['types'])):
+            if (type in zero_list['types'][i]):
+                for zero_types in zero_list['types'][i].values():
+                    for zero_type in zero_types:
+                        types_score[zero_type] *= 0
+    return types_score
+
+def get_keys_from_value(d, val):
+    return [k for k, v in d.items() if v == val]
+
+def export_type_score(types_score):
+    type_score_message =""
+    four_times_types = get_keys_from_value(types_score, 4)
+    if len(four_times_types)!=0 :
+        type_score_message += "\n-----4倍-----\n"
+        type_score_message += '\n'.join(four_times_types)
+    two_times_types = get_keys_from_value(types_score, 2)
+    if len(two_times_types)!=0 :
+        type_score_message += "\n-----2倍-----\n"
+        type_score_message += '\n'.join(two_times_types)
+    half_types = get_keys_from_value(types_score, 0.5)
+    if len(half_types)!=0 :
+        type_score_message += "\n-----0.5倍-----\n"
+        type_score_message += '\n'.join(half_types)
+    quarter_types = get_keys_from_value(types_score, 0.25)
+    if len(quarter_types)!=0 :
+        type_score_message += "\n-----0.25倍-----\n"
+        type_score_message += '\n'.join(quarter_types)
+    zero_types = get_keys_from_value(types_score, 0)
+    if len(zero_types)!=0 :
+        type_score_message += "\n-----0倍-----\n"
+        type_score_message += '\n'.join(zero_types)
+    return type_score_message
+    
+
+
 @app.route("/")
 def hello_world():
     return "hello world!"
@@ -96,22 +159,39 @@ def callback():
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
-    message = "そんなポケモンはおらん！！！！"
-    for i in range(len(pokemon_list)):
-        if(pokemon_list[i]['name']['japanese']==event.message.text):
-            search_info = get_status(pokemon_list[i])
-            search_info += "じゃぞ！！\n"
-            pokemon_url = str(pokemon_list[i]['name']['japanese']) + "のポケモン徹底攻略のページじゃぞ！\n" + get_tettei_kouryaku(pokemon_list[i]['id'])
-            message = search_info + pokemon_url + "\nポケモンゲットじゃぞ！！！"
-            exit
-    image_message = ImageSendMessage(
-        original_content_url="https://2.bp.blogspot.com/-Ten5Y3wa1s8/VMItaHv6ikI/AAAAAAAAqtU/HVC0kvCwPYo/s800/character_hakase.png", #JPEG 最大画像サイズ：240×240 最大ファイルサイズ：1MB(注意:仕様が変わっていた)
-        preview_image_url="https://2.bp.blogspot.com/-Ten5Y3wa1s8/VMItaHv6ikI/AAAAAAAAqtU/HVC0kvCwPYo/s800/character_hakase.png" #JPEG 最大画像サイズ：1024×1024 最大ファイルサイズ：1MB(注意:仕様が変わっていた)
-        )
-    line_bot_api.reply_message(
-        event.reply_token,
-        [TextSendMessage(text=message), image_message]
-        )
+    # message = "そんなポケモンはおらん！！！！"
+    # for i in range(len(pokemon_list)):
+    #     if(pokemon_list[i]['name']['japanese']==event.message.text):
+    #         search_info = get_status(pokemon_list[i])
+    #         search_info += "じゃぞ！！\n\n"
+    #         pokemon_url = str(pokemon_list[i]['name']['japanese']) + "のポケモン徹底攻略のページじゃぞ！\n" + get_tettei_kouryaku(pokemon_list[i]['id'])
+    #         message = search_info + pokemon_url + "\nポケモンゲットじゃぞ！！！"
+    #         exit
+    # # image_message = ImageSendMessage(
+    # #     original_content_url="https://2.bp.blogspot.com/-Ten5Y3wa1s8/VMItaHv6ikI/AAAAAAAAqtU/HVC0kvCwPYo/s800/character_hakase.png", #JPEG 最大画像サイズ：240×240 最大ファイルサイズ：1MB(注意:仕様が変わっていた)
+    # #     preview_image_url="https://2.bp.blogspot.com/-Ten5Y3wa1s8/VMItaHv6ikI/AAAAAAAAqtU/HVC0kvCwPYo/s800/character_hakase.png" #JPEG 最大画像サイズ：1024×1024 最大ファイルサイズ：1MB(注意:仕様が変わっていた)
+    # #     )
+    # line_bot_api.reply_message(
+    #     event.reply_token,
+    #     # [TextSendMessage(text=message), image_message]
+    #     [TextSendMessage(text=message)]
+    #     )
+        
+    data = {
+        "apikey": "YOUR_API_KEY",
+        "query": event.message.text ,
+    }
+ 
+    data = urllib.parse.urlencode(data).encode("utf-8")
+    with urllib.request.urlopen("https://api.a3rt.recruit-tech.co.jp/talk/v1/smalltalk", data=data) as res:
+        #response = res.read().decode("utf-8")
+        reply_json = json.loads(res.read().decode("unicode_escape"))
+ 
+        if reply_json['status'] == 0:
+            reply = reply_json['results'][0]['reply']
+            line_bot_api.reply_message(
+                event.reply_token,
+                TextSendMessage(text=reply))
 
 if __name__ == "__main__":
 #    app.run()
