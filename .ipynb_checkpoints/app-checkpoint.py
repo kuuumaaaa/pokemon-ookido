@@ -95,7 +95,7 @@ def cal_type_score(input_types):
                     for double_type in double_types:
                         types_score[double_type] *= 2
         for i in range(len(half_list['types'])):
-            if (type in half_list['types'][i]):
+            if (type in double_list['types'][i]):
                 for half_types in half_list['types'][i].values():
                     for half_type in half_types:
                         types_score[half_type] *= 0.5
